@@ -37,7 +37,8 @@
     <RepositoryReference Include="roslyn-analyzers" />
     <RepositoryReference Include="vstest" />
     <RepositoryReference Include="fsharp" />
-    <RepositoryReference Include="format" />
+    <!-- TODO:  Enable once dotnet-format is included in source-build -->
+    <!-- <RepositoryReference Include="format" /> -->
     <RepositoryReference Include="deployment-tools" />
     <RepositoryReference Include="razor-compiler" />
   </ItemGroup>
