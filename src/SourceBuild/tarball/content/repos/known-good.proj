@@ -63,7 +63,7 @@
         <RepositoryReference Include="vstest" />
 
         <!-- Tier 6 -->
-        <!-- <RepositoryReference Include="installer" /> -->
+        <RepositoryReference Include="installer" />
 
         <!-- Package source-build artifacts -->
         <RepositoryReference Include="package-source-build" />
