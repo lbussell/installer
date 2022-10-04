@@ -1,0 +1,87 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Logan Bussell <loganbussell@microsoft.com>
+Date: Tue, 4 Oct 2022 18:49:08 +0000
+Subject: [PATCH 1/2] Eliminate source-build prebuilts
+
+---
+ eng/Versions.props                                        | 3 +--
+ src/Directory.Build.targets                               | 5 +++--
+ .../GenerateDocumentationAndConfigFiles.csproj            | 2 +-
+ ...rateDocumentationAndConfigFilesForBrokenRuntime.csproj | 8 +++++++-
+ src/Tools/ReleaseNotesUtil/ReleaseNotesUtil.csproj        | 1 +
+ 5 files changed, 13 insertions(+), 6 deletions(-)
+
+diff --git a/eng/Versions.props b/eng/Versions.props
+index 54e9a1b..0a7900e 100644
+--- a/eng/Versions.props
++++ b/eng/Versions.props
+@@ -1,6 +1,5 @@
+ <Project>
+-  <Import Project="$(SourceBuildPackageVersionPropsPath)" Condition="'$(SourceBuildPackageVersionPropsPath)' != ''" />
+-  <PropertyGroup>
++  <PropertyGroup Condition="'$(DotNetBuildFromSource)' != 'true'">
+     <!--
+       Binaries that need to be executable during source build are restricted to versions available within source build.
+       This section defines executable versions of packages which are referenced via lower-version reference assemblies
+diff --git a/src/Directory.Build.targets b/src/Directory.Build.targets
+index c7c28fd..e5be9e0 100644
+--- a/src/Directory.Build.targets
++++ b/src/Directory.Build.targets
+@@ -35,8 +35,9 @@
+       <Link>AnalyzerReleases\$(AssemblyName)\AnalyzerReleases.Shipped.md</Link>
+     </None>
+   </ItemGroup>
+-  
+-  <ItemGroup>
++
++  <!-- Disable code analysis for source build -->
++  <ItemGroup Condition="'$(DotNetBuildFromSource)' != 'true'">
+     <PackageReference Include="Microsoft.CodeAnalysis.BannedApiAnalyzers" Version="$(MicrosoftCodeAnalysisBannedApiAnalyzersVersion)" />
+     <AdditionalFiles Include="$(MSBuildThisFileDirectory)\BannedSymbols.txt" Condition="'$(BannedSymbolsOptOut)' != 'true'" />
+   </ItemGroup>
+diff --git a/src/Tools/GenerateDocumentationAndConfigFiles/GenerateDocumentationAndConfigFiles.csproj b/src/Tools/GenerateDocumentationAndConfigFiles/GenerateDocumentationAndConfigFiles.csproj
+index 6418ced..a5c7a83 100644
+--- a/src/Tools/GenerateDocumentationAndConfigFiles/GenerateDocumentationAndConfigFiles.csproj
++++ b/src/Tools/GenerateDocumentationAndConfigFiles/GenerateDocumentationAndConfigFiles.csproj
+@@ -5,7 +5,7 @@
+     <NonShipping>true</NonShipping>
+     <UseAppHost>false</UseAppHost>
+     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+-    <MicrosoftCodeAnalysisVersion>$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)</MicrosoftCodeAnalysisVersion>
++    <MicrosoftCodeAnalysisVersion Condition="'$(DotNetBuildFromSource)' != 'true'">$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)</MicrosoftCodeAnalysisVersion>
+   </PropertyGroup>
+   <ItemGroup>
+     <Compile Include="..\..\Microsoft.CodeAnalysis.Analyzers\Core\MetaAnalyzers\ReleaseTrackingHelper.cs" Link="ReleaseTrackingHelper.cs" />
+diff --git a/src/Tools/GenerateDocumentationAndConfigFilesForBrokenRuntime/GenerateDocumentationAndConfigFilesForBrokenRuntime.csproj b/src/Tools/GenerateDocumentationAndConfigFilesForBrokenRuntime/GenerateDocumentationAndConfigFilesForBrokenRuntime.csproj
+index 6aa01d1..0d162c5 100644
+--- a/src/Tools/GenerateDocumentationAndConfigFilesForBrokenRuntime/GenerateDocumentationAndConfigFilesForBrokenRuntime.csproj
++++ b/src/Tools/GenerateDocumentationAndConfigFilesForBrokenRuntime/GenerateDocumentationAndConfigFilesForBrokenRuntime.csproj
+@@ -11,9 +11,15 @@
+     <ProjectReference Include="..\GenerateDocumentationAndConfigFiles\GenerateDocumentationAndConfigFiles.csproj" />
+   </ItemGroup>
+ 
+-  <ItemGroup>
++  <ItemGroup Condition="'$(DotNetBuildFromSource)' != 'true'">
+     <PackageReference Include="Microsoft.CodeAnalysis" Version="$(MicrosoftCodeAnalysisExecutableVersion)" />
+     <PackageReference Include="System.Collections.Immutable" Version="$(SystemCollectionsImmutableExecutableVersion)" />
+     <PackageReference Include="System.Reflection.Metadata" Version="$(SystemReflectionMetadataExecutableVersion)" />
+   </ItemGroup>
++
++  <!-- In source-build, the only executable version of Microsoft.CodeAnalysis is the one we already built, which is always
++  stored in MicrosoftCodeAnalysisVersion. -->
++  <ItemGroup Condition="'$(DotNetBuildFromSource)' == 'true'">
++    <PackageReference Include="Microsoft.CodeAnalysis" Version="$(MicrosoftCodeAnalysisVersion)" />
++  </ItemGroup>
+ </Project>
+diff --git a/src/Tools/ReleaseNotesUtil/ReleaseNotesUtil.csproj b/src/Tools/ReleaseNotesUtil/ReleaseNotesUtil.csproj
+index 35921e7..1d94786 100644
+--- a/src/Tools/ReleaseNotesUtil/ReleaseNotesUtil.csproj
++++ b/src/Tools/ReleaseNotesUtil/ReleaseNotesUtil.csproj
+@@ -3,6 +3,7 @@
+     <OutputType>Exe</OutputType>
+     <TargetFramework>net7.0</TargetFramework>
+     <NonShipping>true</NonShipping>
++    <ExcludeFromSourceBuild>true</ExcludeFromSourceBuild>
+   </PropertyGroup>
+   <ItemGroup>
+     <PackageReference Include="Microsoft.CodeAnalysis" Version="$(MicrosoftCodeAnalysisVersion)" />

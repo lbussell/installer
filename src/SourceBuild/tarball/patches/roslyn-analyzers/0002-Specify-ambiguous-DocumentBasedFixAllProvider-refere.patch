@@ -1,0 +1,50 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Logan Bussell <loganbussell@microsoft.com>
+Date: Tue, 4 Oct 2022 18:50:14 +0000
+Subject: [PATCH 2/2] Specify ambiguous DocumentBasedFixAllProvider reference
+
+---
+ .../Core/MetaAnalyzers/Fixers/PreferIsKindFix.cs                | 2 +-
+ .../CSharpDisableRuntimeMarshalling.FixAllProvider.cs           | 2 +-
+ .../ApiDesignGuidelines/DoNotDirectlyAwaitATask.Fixer.cs        | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/Microsoft.CodeAnalysis.Analyzers/Core/MetaAnalyzers/Fixers/PreferIsKindFix.cs b/src/Microsoft.CodeAnalysis.Analyzers/Core/MetaAnalyzers/Fixers/PreferIsKindFix.cs
+index 7a6877e..a0cbd06 100644
+--- a/src/Microsoft.CodeAnalysis.Analyzers/Core/MetaAnalyzers/Fixers/PreferIsKindFix.cs
++++ b/src/Microsoft.CodeAnalysis.Analyzers/Core/MetaAnalyzers/Fixers/PreferIsKindFix.cs
+@@ -48,7 +48,7 @@ private async Task<Document> ConvertKindToIsKindAsync(Document document, TextSpa
+ 
+         protected abstract void FixDiagnostic(DocumentEditor editor, SyntaxNode nodeToFix);
+ 
+-        private sealed class CustomFixAllProvider : DocumentBasedFixAllProvider
++        private sealed class CustomFixAllProvider : Analyzer.Utilities.DocumentBasedFixAllProvider
+         {
+             private readonly PreferIsKindFix _fixer;
+ 
+diff --git a/src/NetAnalyzers/CSharp/Microsoft.NetCore.Analyzers/InteropServices/CSharpDisableRuntimeMarshalling.FixAllProvider.cs b/src/NetAnalyzers/CSharp/Microsoft.NetCore.Analyzers/InteropServices/CSharpDisableRuntimeMarshalling.FixAllProvider.cs
+index 4bb27f0..6d93ac3 100644
+--- a/src/NetAnalyzers/CSharp/Microsoft.NetCore.Analyzers/InteropServices/CSharpDisableRuntimeMarshalling.FixAllProvider.cs
++++ b/src/NetAnalyzers/CSharp/Microsoft.NetCore.Analyzers/InteropServices/CSharpDisableRuntimeMarshalling.FixAllProvider.cs
+@@ -15,7 +15,7 @@ namespace Microsoft.NetCore.Analyzers.InteropServices
+ {
+     public sealed partial class CSharpDisableRuntimeMarshallingFixer
+     {
+-        private class CustomFixAllProvider : DocumentBasedFixAllProvider
++        private class CustomFixAllProvider : Analyzer.Utilities.DocumentBasedFixAllProvider
+         {
+             public static readonly CustomFixAllProvider Instance = new();
+ 
+diff --git a/src/NetAnalyzers/Core/Microsoft.CodeQuality.Analyzers/ApiDesignGuidelines/DoNotDirectlyAwaitATask.Fixer.cs b/src/NetAnalyzers/Core/Microsoft.CodeQuality.Analyzers/ApiDesignGuidelines/DoNotDirectlyAwaitATask.Fixer.cs
+index 331c0a4..492d0d4 100644
+--- a/src/NetAnalyzers/Core/Microsoft.CodeQuality.Analyzers/ApiDesignGuidelines/DoNotDirectlyAwaitATask.Fixer.cs
++++ b/src/NetAnalyzers/Core/Microsoft.CodeQuality.Analyzers/ApiDesignGuidelines/DoNotDirectlyAwaitATask.Fixer.cs
+@@ -74,7 +74,7 @@ public sealed override FixAllProvider GetFixAllProvider()
+             return CustomFixAllProvider.Instance;
+         }
+ 
+-        private sealed class CustomFixAllProvider : DocumentBasedFixAllProvider
++        private sealed class CustomFixAllProvider : Analyzer.Utilities.DocumentBasedFixAllProvider
+         {
+             public static readonly CustomFixAllProvider Instance = new();
+ 
