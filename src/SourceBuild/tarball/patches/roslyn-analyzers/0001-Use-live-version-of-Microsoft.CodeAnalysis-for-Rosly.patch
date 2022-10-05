@@ -1,0 +1,55 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Logan Bussell <loganbussell@microsoft.com>
+Date: Wed, 5 Oct 2022 15:32:32 -0700
+Subject: [PATCH] Use live version of Microsoft.CodeAnalysis for
+ Roslyn.Diagnostics.Analyzers
+
+---
+ .../CSharp/Roslyn.Diagnostics.CSharp.Analyzers.csproj          | 3 ++-
+ .../Core/Roslyn.Diagnostics.Analyzers.csproj                   | 2 +-
+ .../Roslyn.Diagnostics.VisualBasic.Analyzers.vbproj            | 3 ++-
+ 3 files changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/src/Roslyn.Diagnostics.Analyzers/CSharp/Roslyn.Diagnostics.CSharp.Analyzers.csproj b/src/Roslyn.Diagnostics.Analyzers/CSharp/Roslyn.Diagnostics.CSharp.Analyzers.csproj
+index e62266894..19d60f5f7 100644
+--- a/src/Roslyn.Diagnostics.Analyzers/CSharp/Roslyn.Diagnostics.CSharp.Analyzers.csproj
++++ b/src/Roslyn.Diagnostics.Analyzers/CSharp/Roslyn.Diagnostics.CSharp.Analyzers.csproj
+@@ -10,7 +10,8 @@
+     <InternalsVisibleTo Include="Roslyn.Diagnostics.Analyzers.UnitTests" />
+   </ItemGroup>
+   <ItemGroup>
+-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)" />
++    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'"/>
++    <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces" Version="$(MicrosoftCodeAnalysisVersion)" Condition="'$(DotNetBuildFromSource)' == 'true'"/>
+   </ItemGroup>
+   <Import Project="..\..\Utilities\Refactoring.CSharp\Refactoring.CSharp.Utilities.projitems" Label="Shared" />
+ </Project>
+\ No newline at end of file
+diff --git a/src/Roslyn.Diagnostics.Analyzers/Core/Roslyn.Diagnostics.Analyzers.csproj b/src/Roslyn.Diagnostics.Analyzers/Core/Roslyn.Diagnostics.Analyzers.csproj
+index 60450aee0..0acfeca02 100644
+--- a/src/Roslyn.Diagnostics.Analyzers/Core/Roslyn.Diagnostics.Analyzers.csproj
++++ b/src/Roslyn.Diagnostics.Analyzers/Core/Roslyn.Diagnostics.Analyzers.csproj
+@@ -7,7 +7,7 @@
+       Restore would conclude that there is a cyclic dependency between us and the Roslyn.Diagnostics.Analyzers package.
+     -->
+     <PackageId>*$(MSBuildProjectFile)*</PackageId>
+-    <MicrosoftCodeAnalysisVersion>$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)</MicrosoftCodeAnalysisVersion>
++    <MicrosoftCodeAnalysisVersion Condition="'$(DotNetBuildFromSource)' != 'true'">$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)</MicrosoftCodeAnalysisVersion>
+   </PropertyGroup>
+   <ItemGroup>
+     <InternalsVisibleTo Include="Roslyn.Diagnostics.CSharp.Analyzers" />
+diff --git a/src/Roslyn.Diagnostics.Analyzers/VisualBasic/Roslyn.Diagnostics.VisualBasic.Analyzers.vbproj b/src/Roslyn.Diagnostics.Analyzers/VisualBasic/Roslyn.Diagnostics.VisualBasic.Analyzers.vbproj
+index 509a3c069..50d9085a1 100644
+--- a/src/Roslyn.Diagnostics.Analyzers/VisualBasic/Roslyn.Diagnostics.VisualBasic.Analyzers.vbproj
++++ b/src/Roslyn.Diagnostics.Analyzers/VisualBasic/Roslyn.Diagnostics.VisualBasic.Analyzers.vbproj
+@@ -7,7 +7,8 @@
+     <ProjectReference Include="..\Core\Roslyn.Diagnostics.Analyzers.csproj" />
+   </ItemGroup>
+   <ItemGroup>
+-    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)" />
++    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'"/>
++    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' == 'true'"/>
+   </ItemGroup>
+   <Import Project="..\..\Utilities\Refactoring.VisualBasic\Refactoring.VisualBasic.Utilities.projitems" Label="Shared" />
+ </Project>
+\ No newline at end of file
