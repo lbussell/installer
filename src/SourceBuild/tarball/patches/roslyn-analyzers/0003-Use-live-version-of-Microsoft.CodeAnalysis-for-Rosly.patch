@@ -48,7 +48,7 @@ index 509a3c069..50d9085a1 100644
    <ItemGroup>
 -    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)" />
 +    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(MicrosoftCodeAnalysisForRoslynDiagnosticsAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' != 'true'"/>
-+    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(MicrosoftCodeAnalysisAnalyzersVersion)" Condition="'$(DotNetBuildFromSource)' == 'true'"/>
++    <PackageReference Include="Microsoft.CodeAnalysis.VisualBasic.Workspaces" Version="$(MicrosoftCodeAnalysisVersion)" Condition="'$(DotNetBuildFromSource)' == 'true'"/>
    </ItemGroup>
    <Import Project="..\..\Utilities\Refactoring.VisualBasic\Refactoring.VisualBasic.Utilities.projitems" Label="Shared" />
  </Project>
