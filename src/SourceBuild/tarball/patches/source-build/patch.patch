@@ -1,0 +1,40 @@
+These nuget feeds cause automatic secure supply chain checks to fail when
+submodules are flattened and checked in.
+
+We check-in a version of the source tarball internally, so these patches must be
+applied during tarball creation. Since the source-build repo only applies
+patches during build, these need to live here. 
+
+Generated using the following command (from https://stackoverflow.com/a/36648863):
+git submodule --quiet foreach --recursive 'export NAME="${PWD##*/}"; git --no-pager diff --src-prefix="a/${NAME}/" --dst-prefix="b/${NAME}/"'
+
+---
+
+diff --git a/src/humanizer/src/NuGet.config b/src/humanizer/src/NuGet.config
+index be02089..f3c20ed 100644
+--- a/src/humanizer/src/NuGet.config
++++ b/src/humanizer/src/NuGet.config
+@@ -1,7 +1,7 @@
+ <?xml version="1.0" encoding="utf-8"?>
+ <configuration>
+   <packageSources>    
+-    <add key="CI Builds (Humanizer)" value="https://www.myget.org/F/humanizer/api/v3/index.json" />    
++    <clear/>
+     <add key="nuget.org" value="https://api.nuget.org/v3/index.json" />
+   </packageSources>
+ </configuration>
+\ No newline at end of file
+diff --git a/src/newtonsoft-json901/Src/NuGet.Config b/src/newtonsoft-json901/Src/NuGet.Config
+index 3e0a4cf5..b04b0068 100644
+--- a/src/newtonsoft-json901/Src/NuGet.Config
++++ b/src/newtonsoft-json901/Src/NuGet.Config
+@@ -3,8 +3,6 @@
+   <packageSources>
+     <!--To inherit the global NuGet package sources remove the <clear/> line below -->
+     <clear />
+-    <add key="dotnet-core" value="https://dotnet.myget.org/F/dotnet-core/api/v3/index.json" />
+-    <!--<add key="cli-deps" value="https://dotnet.myget.org/F/cli-deps/api/v3/index.json" />-->
+     <add key="NuGet.org (v3)" value="https://api.nuget.org/v3/index.json" />
+   </packageSources>
+ </configuration>
+\ No newline at end of file
