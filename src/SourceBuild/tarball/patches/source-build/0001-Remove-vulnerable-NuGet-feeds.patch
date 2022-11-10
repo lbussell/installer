@@ -1,3 +1,8 @@
+From 0000000000000000000000000000000000000000 Mon Sep 17 00:00:00 2001
+From: Logan Bussell <loganbussell@microsoft.com>
+Date: Thu, 10 Nov 2022 19:49:06 +0000
+Subject: [PATCH] Remove vulnerable NuGet feeds
+
 These nuget feeds cause automatic secure supply chain checks to fail when
 submodules are flattened and checked in.
 
@@ -6,7 +11,7 @@ applied during tarball creation. Since the source-build repo only applies
 patches during build, these need to live here. 
 
 Generated using the following command (from https://stackoverflow.com/a/36648863):
-git submodule --quiet foreach --recursive 'export NAME="${PWD##*/}"; git --no-pager diff --src-prefix="a/${NAME}/" --dst-prefix="b/${NAME}/"'
+git submodule --quiet foreach --recursive 'export NAME="${PWD##*/}"; git --no-pager diff --src-prefix="a/src/${NAME}/" --dst-prefix="b/src/${NAME}/"'
 
 ---
 
