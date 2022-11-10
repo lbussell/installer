@@ -7,7 +7,7 @@ git submodule --quiet foreach --recursive 'export NAME="${PWD##*/}"; git --no-pa
 
 ---
 
-diff --git a/submodules/Common/NuGet.config b/Common/NuGet.config
+diff --git a/submodules/Common/NuGet.config b/submodules/Common/NuGet.config
 index 09c3488420..c7b9f38d2a 100644
 --- a/submodules/Common/NuGet.config
 +++ b/submodules/Common/NuGet.config

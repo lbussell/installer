@@ -207,7 +207,7 @@
       Importance="High"
       Condition="'@(SourceBuildPatchFile)' != ''" />
     <Exec
-      Command="git --work-tree=$(TarballRepoSourceDir) apply --ignore-whitespace --whitespace=nowarn &quot;%(SourceBuildPatchFile.FullPath)&quot;"
+      Command="git --work-tree=$(TarballRepoSourceDir) apply -v --ignore-whitespace --whitespace=nowarn &quot;%(SourceBuildPatchFile.FullPath)&quot;"
       WorkingDirectory="$(TarballRepoSourceDir)"
       Condition="'@(SourceBuildPatchFile)' != ''" />
     <Message
